@@ -22,9 +22,10 @@ public:
         uint16_t opcode = (memory[pc] << 8) | memory[pc + 1];
         pc += 2;
 
-        uint8_t tipoComando = (opcode & 0xF000) >> 12;
-        uint16_t nnn = opcode & 0x0FFF;          
+        uint8_t tipoComando = (opcode & 0xF000) >> 12;     
         uint8_t x = (opcode & 0x0F00) >> 8;
+        uint8_t y = (opcode & 0x00F0) >> 4;
+        uint16_t nnn = opcode & 0x0FFF; 
         uint8_t nn = opcode & 0x00FF;
 
         switch (tipoComando) {
@@ -47,8 +48,15 @@ public:
             if(V[x] != nn){
                 pc += 2;
             }
-            std::cout << "Instrucao 0x4: Se V[" << (int)x << "] != 0x"
+            std::cout << "Instrucao 0x4: Se V[" << (int)x << "] !a= 0x"
                       << std::hex << (int)nn << std::dec << std::endl;
+            break;
+
+            case 0x5:
+            if(V[x] == V[y]){
+                pc += 2;
+            }
+            std::cout << "Instrução 0x5: Se V[" << (int)x << "] == V[" << (int)y << "]" << std::endl;
             break;
 
             case 0x6:
@@ -85,15 +93,19 @@ int main() {
     emulador.memory[0x200] = 0x60;
     emulador.memory[0x201] = 0x05;
 
-    emulador.memory[0x202] = 0x40;
-    emulador.memory[0x203] = 0x0A;
+    emulador.memory[0x202] = 0x61;
+    emulador.memory[0x203] = 0x05;
 
-    emulador.memory[0x204] = 0x60;
-    emulador.memory[0x205] = 0x09;
+    emulador.memory[0x204] = 0x50;
+    emulador.memory[0x205] = 0x10;
 
-    emulador.memory[0x206] = 0x70;
-    emulador.memory[0x207] = 0x01;
+    emulador.memory[0x206] = 0x60;
+    emulador.memory[0x207] = 0x09;
 
+    emulador.memory[0x208] = 0x70;
+    emulador.memory[0x209] = 0x01;
+
+    emulador.cycle();
     emulador.cycle();
     emulador.cycle();
     emulador.cycle();
