@@ -43,6 +43,14 @@ public:
                       << std::hex << (int)nn << std::dec << std::endl;
             break;
 
+            case 0x4:
+            if(V[x] != nn){
+                pc += 2;
+            }
+            std::cout << "Instrucao 0x4: Se V[" << (int)x << "] != 0x"
+                      << std::hex << (int)nn << std::dec << std::endl;
+            break;
+
             case 0x6:
             V[x] = nn;
             std::cout << "Instrucao 0x6: Registrador V["<< (int)x <<"] recebeu o valor 0x"
@@ -77,8 +85,8 @@ int main() {
     emulador.memory[0x200] = 0x60;
     emulador.memory[0x201] = 0x05;
 
-    emulador.memory[0x202] = 0x30;
-    emulador.memory[0x203] = 0x05;
+    emulador.memory[0x202] = 0x40;
+    emulador.memory[0x203] = 0x0A;
 
     emulador.memory[0x204] = 0x60;
     emulador.memory[0x205] = 0x09;
