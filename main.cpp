@@ -71,6 +71,72 @@ public:
                       << std::hex << (int)V[x] << std::dec << std::endl;
             break;
 
+            case 0x8:
+            switch (opcode & 0x000F){
+                case 0x0:
+                V[x] = V[y];
+                std::cout << "Instrucao 0x8XY0: V[" << (int)x << "] = V[" << (int)y << "]" << std::endl;
+                break;
+
+                case 0x1:
+                V[x] = V[x] | V[y];
+                std::cout << "Instrucao 0x8XY1: V[" << (int)x << "] |= V[" << (int)y << "]" << std::endl;
+            break;
+                break;
+
+                case 0x2:
+                V[x] = V[x] & V[y];
+                std::cout << "Instrucao 0x8XY2: V[" << (int)x << "] &= V[" << (int)y << "]" << std::endl;
+                break;
+
+                case 0x3:
+                V[x] = V[x] ^ V[y];
+                std::cout << "Instrucao 0x8XY3: V[" << (int)x << "] ^= V[" << (int)y << "]" << std::endl;
+                break;
+
+                case 0x4:
+                if(V[x] + V[y] > 255){
+                    V[0xF] = 1;
+                } else {
+                    V[0xF] = 0;
+                }
+                V[x] += V[y];
+                std::cout << "Instrucao 0x8XY4: V[" << (int)x << "] += V[" << (int)y << "] (Carry: " << (int)V[0xF] << ")" << std::endl;
+                break;
+
+                case 0x5:
+                if(V[x] >= V[y]){
+                    V[0xF] = 1;
+                } else {
+                    V[0xF] = 0;
+                }
+                V[x] -= V[y];
+                std::cout << "Instrucao 0x8XY5: V[" << (int)x << "] -= V[" << (int)y << "] (NOT Borrow: " << (int)V[0xF] << ")" << std::endl;
+                break;
+
+                case 0x6:
+                V[0xF] = V[x] & 1;
+                V[x] = V[x] >> 1;
+                std::cout << "Instrucao 0x8XY6: V[" << (int)x << "] >>= 1 (LSB: " << (int)V[0xF] << ")" << std::endl;
+                break;
+
+                case 0x7:
+                if(V[y] >= V[x]){
+                    V[0xF] = 1;
+                } else {
+                    V[0xF] = 0;
+                }
+                V[x] = V[y] - V[x];
+                std::cout << "Instrucao 0x8XY7: V[" << (int)x << "] = V[" << (int)y << "] - V[" << (int)x << "] (NOT Borrow: " << (int)V[0xF] << ")" << std::endl;
+                break;
+
+                case 0xE:
+                V[0xF] = (V[x] & 0x80) >> 7;
+                V[x] = V[x] << 1;
+                std::cout << "Instrucao 0x8XYE: V[" << (int)x << "] <<= 1 (MSB: " << (int)V[0xF] << ")" << std::endl;
+                break;
+            };
+
             case 0x9:
             if(V[x] != V[y]){
                 pc += 2;
