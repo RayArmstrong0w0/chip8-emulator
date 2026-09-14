@@ -71,6 +71,13 @@ public:
                       << std::hex << (int)V[x] << std::dec << std::endl;
             break;
 
+            case 0x9:
+            if(V[x] != V[y]){
+                pc += 2;
+            }
+            std::cout << "Instrução 0x9: Se V[" << (int)x << "] != V[" << (int)y << "]" << std::endl;
+            break;
+
             case 0xA:
             I = nnn;
             std::cout << "Instruções 0xA: Registradores I atualizado para 0x"
