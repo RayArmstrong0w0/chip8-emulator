@@ -81,7 +81,6 @@ public:
                 case 0x1:
                 V[x] = V[x] | V[y];
                 std::cout << "Instrucao 0x8XY1: V[" << (int)x << "] |= V[" << (int)y << "]" << std::endl;
-            break;
                 break;
 
                 case 0x2:
@@ -136,6 +135,7 @@ public:
                 std::cout << "Instrucao 0x8XYE: V[" << (int)x << "] <<= 1 (MSB: " << (int)V[0xF] << ")" << std::endl;
                 break;
             };
+            break;
 
             case 0x9:
             if(V[x] != V[y]){
