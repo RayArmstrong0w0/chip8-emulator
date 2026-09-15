@@ -27,6 +27,9 @@ public:
         uint8_t y = (opcode & 0x00F0) >> 4;
         uint16_t nnn = opcode & 0x0FFF; 
         uint8_t nn = opcode & 0x00FF;
+        uint8_t DT = 0;
+        uint8_t ST = 0;
+        bool teclado[16] = {false};
 
         switch (tipoComando) {
 
@@ -150,6 +153,76 @@ public:
                       <<  std::hex << I << std::dec << std::endl;
             break;
 
+            case 0xF:
+            switch (opcode & 0x00FF){
+                case 0x7:
+                V[x] = DT;
+                std::cout << "Instrucao 0xFX07: V[" << (int)x << "] recebeu valor do DT (" << (int)DT << ")" << std::endl;
+                break;
+
+                case 0x0A: {
+                bool teclaPressionada = false;
+
+                for(int i = 0; i < 16; i++){
+                    if (teclado[i]){
+                        V[x] = i;
+                        teclaPressionada = true;
+                        break;
+                    }
+                }
+
+                if (!teclaPressionada){
+                    pc -= 2;
+                }
+                std::cout << "Instrucao 0xFX0A: Aguardando entrada de tecla..." << std::endl;
+                break;
+            }
+
+                case 0x15:
+                DT = V[x];
+                std::cout << "Instrucao 0xFX15: DT atualizado para 0x" 
+                          << std::hex << (int)V[x] << std::dec << " via V[" << (int)x << "]" << std::endl;
+                break;
+
+                case 0x18:
+                ST = V[x];
+                break;
+
+                case 0x1E:
+                I = I + V[x];
+                break;
+
+                case 0x29:
+                I = 0x050 + (V[x] * 5);
+                std::cout << "Instrucao 0xFX29: Registrador I apontado para a fonte do digito 0x" 
+                          << std::hex << (int)V[x] << std::dec << std::endl;
+                break;
+
+                case 0x33:
+                memory[I] = V[x] / 100;
+                memory[I+1] = (V[x] / 10) % 10;
+                memory[I+2] = V[x] % 10;
+                std::cout << "Instrucao 0xFX33: BCD de V[" << (int)x << "] (" << (int)V[x] 
+                          << ") salvo em memory[" << std::hex << I << "]" << std::dec << std::endl;
+                break;
+
+                case 0x55:
+                for(int i = 0; i <= x; i++){
+                    memory[I + i] = V[i];
+                }
+                std::cout << "Instrucao 0xFX55: Registradores V0 ate V[" << (int)x 
+                          << "] salvos na memoria a partir de 0x" << std::hex << I << std::dec << std::endl;
+                break;
+
+                case 0x65:
+                for(int i = 0; i <= x; i++){
+                    V[i] = memory[I + i];
+                }
+                std::cout << "Instrucao 0xFX65: Registradores V0 ate V[" << (int)x 
+                          << "] carregados a partir da memoria (0x" << std::hex << I << std::dec << ")" << std::endl;
+                break;
+            }
+
             default:
                 std::cout << "Intruções não reconhecido"
                           <<std::hex << opcode << std::dec << std::endl;
@@ -162,26 +235,6 @@ public:
 
 int main() {
     Chip8 emulador;
-
-    emulador.memory[0x200] = 0x60;
-    emulador.memory[0x201] = 0x05;
-
-    emulador.memory[0x202] = 0x61;
-    emulador.memory[0x203] = 0x05;
-
-    emulador.memory[0x204] = 0x50;
-    emulador.memory[0x205] = 0x10;
-
-    emulador.memory[0x206] = 0x60;
-    emulador.memory[0x207] = 0x09;
-
-    emulador.memory[0x208] = 0x70;
-    emulador.memory[0x209] = 0x01;
-
-    emulador.cycle();
-    emulador.cycle();
-    emulador.cycle();
-    emulador.cycle();
 
     std::cout << "Emulador CHIP-8 inicializado com sucesso!" << std::endl;
     std::cout <<"Program Counter (PC) posicionado em: 0x"
