@@ -6,7 +6,12 @@ public:
     uint8_t memory[4096];  
     uint8_t V[16];      
     uint16_t I;
-    uint16_t pc;            
+    uint16_t pc;     
+    uint8_t DT = 0;
+    uint8_t ST = 0;
+    uint8_t sp = 0;
+    uint16_t stack[16] = {0};
+    bool teclado[16] = {false};       
 
     Chip8() {
         pc = 0x200;    
@@ -27,9 +32,6 @@ public:
         uint8_t y = (opcode & 0x00F0) >> 4;
         uint16_t nnn = opcode & 0x0FFF; 
         uint8_t nn = opcode & 0x00FF;
-        uint8_t DT = 0;
-        uint8_t ST = 0;
-        bool teclado[16] = {false};
 
         switch (tipoComando) {
 
