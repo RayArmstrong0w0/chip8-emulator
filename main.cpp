@@ -35,6 +35,19 @@ public:
 
         switch (tipoComando) {
 
+            case 0x0:
+            switch(opcode & 0x00FF){
+
+                case 0xE0:
+
+                break;
+
+                case 0xEE:
+                sp--;
+                pc = stack[sp];
+                break;
+            }
+
             case 0x1:
             pc = nnn;
             std::cout << "Instrucao 0x1: Pulo (Jump) para o endereco 0x"
