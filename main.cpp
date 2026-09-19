@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstring>
 #include <cstdint> 
 #include <cstdlib>
@@ -51,6 +52,24 @@ public:
         for (int i = 0; i < 80; i++) {
             memory[0x050 + i] = fontset[i];
         }
+    }
+
+    bool loadROM(const std::string& caminhoArquivo){
+
+        std::ifstream arquivo(caminhoArquivo, std::ios::binary | std::ios::ate);
+
+        if(!arquivo.is_open()){
+            std::cout << "Erro ao abrir ROM: " << caminhoArquivo << std::endl;
+            return false;
+        }
+
+        std::streamsize tamanho = arquivo.tellg();
+
+        if(tamanho > (4096 - 0x200)){
+            std::cout << "Erro: muito grande para a memoria!" << std::endl;
+            return false;
+        }
+
     }
 
     void cycle() {
