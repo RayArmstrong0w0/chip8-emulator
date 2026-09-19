@@ -70,6 +70,12 @@ public:
             return false;
         }
 
+        arquivo.seekg(0, std::ios::beg);
+
+        arquivo.read(reinterpret_cast<char*>(&memory[0x200]), tamanho);
+
+        std::cout << "ROM " << caminhoArquivo << " carregada com sucesso! (" << tamanho << " bytes)" << std::endl;
+        return true;
     }
 
     void cycle() {
@@ -364,11 +370,25 @@ public:
 };
 
 int main() {
+
+    std::ofstream arquivoTeste("teste.ch8", std::ios::binary);
+    
+    uint8_t romTeste[] = {
+        0x00, 0xE0,
+        0xA0, 0x50,
+        0x12, 0x00
+    };
+
+    arquivoTeste.write(reinterpret_cast<char*>(romTeste), sizeof(romTeste));
+    arquivoTeste.close();
+
     Chip8 emulador;
 
-    std::cout << "Emulador CHIP-8 inicializado com sucesso!" << std::endl;
-    std::cout <<"Program Counter (PC) posicionado em: 0x"
-              << std::hex << emulador.pc << std::dec << std::endl;
+    if (emulador.loadROM("teste.ch8")) {
+        for (int i = 0; i < 3; i++) {
+            emulador.cycle();
+        }
+    }
 
     return 0;
 }
