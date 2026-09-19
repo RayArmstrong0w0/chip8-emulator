@@ -39,7 +39,6 @@ public:
             switch(opcode & 0x00FF){
 
                 case 0xE0:
-
                 break;
 
                 case 0xEE:
@@ -52,6 +51,14 @@ public:
             pc = nnn;
             std::cout << "Instrucao 0x1: Pulo (Jump) para o endereco 0x"
                       <<std::hex << nnn << std::dec << std::endl;
+            break;
+
+            case 0x2:
+            stack[sp] = pc;
+            sp++;
+            pc = nnn;
+            std::cout << "Instrucao 0x2: Chamando subrotina em 0x" 
+                      << std::hex << nnn << std::dec << std::endl;
             break;
 
             case 0x3:
@@ -166,6 +173,12 @@ public:
             I = nnn;
             std::cout << "Instruções 0xA: Registradores I atualizado para 0x"
                       <<  std::hex << I << std::dec << std::endl;
+            break;
+
+            case 0xB:
+            pc = nnn + V[0];
+            std::cout << "Instrucao 0xB: Pulo (Jump) para 0x" 
+                      << std::hex << nnn << " + V[0]" << std::dec << std::endl;
             break;
 
             case 0xF:
