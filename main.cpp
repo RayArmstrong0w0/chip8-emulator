@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstdint> 
+#include <cstdlib>
+#include <ctime>
 
 class Chip8 {
 public:
@@ -11,9 +13,12 @@ public:
     uint8_t ST = 0;
     uint8_t sp = 0;
     uint16_t stack[16] = {0};
-    bool teclado[16] = {false};       
+    bool teclado[16] = {false};
+      
 
     Chip8() {
+        
+        srand(time(NULL));
         pc = 0x200;    
         I = 0;
 
@@ -179,6 +184,12 @@ public:
             pc = nnn + V[0];
             std::cout << "Instrucao 0xB: Pulo (Jump) para 0x" 
                       << std::hex << nnn << " + V[0]" << std::dec << std::endl;
+            break;
+
+            case 0xC:
+            V[x] = (rand() % 256) & nn;
+            std::cout << "Instrucao 0xC: V[" << (int)x << "] recebeu valor aleatorio mascarado 0x" 
+                      << std::hex << (int)V[x] << std::dec << std::endl;
             break;
 
             case 0xF:
