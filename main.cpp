@@ -48,6 +48,7 @@ public:
             switch(opcode & 0x00FF){
 
                 case 0xE0:
+                std::memset(gfx, 0, sizeof(gfx));
                 break;
 
                 case 0xEE:
@@ -55,6 +56,7 @@ public:
                 pc = stack[sp];
                 break;
             }
+            break;
 
             case 0x1:
             pc = nnn;
