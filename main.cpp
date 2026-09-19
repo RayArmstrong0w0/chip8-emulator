@@ -1,7 +1,9 @@
 #include <iostream>
+#include <cstring>
 #include <cstdint> 
 #include <cstdlib>
 #include <ctime>
+
 
 class Chip8 {
 public:
@@ -14,10 +16,11 @@ public:
     uint8_t sp = 0;
     uint16_t stack[16] = {0};
     bool teclado[16] = {false};
+    uint8_t gfx[32][64];
       
 
     Chip8() {
-        
+
         srand(time(NULL));
         pc = 0x200;    
         I = 0;
@@ -37,6 +40,7 @@ public:
         uint8_t y = (opcode & 0x00F0) >> 4;
         uint16_t nnn = opcode & 0x0FFF; 
         uint8_t nn = opcode & 0x00FF;
+        uint8_t n = opcode & 0x000F;
 
         switch (tipoComando) {
 
@@ -191,6 +195,32 @@ public:
             std::cout << "Instrucao 0xC: V[" << (int)x << "] recebeu valor aleatorio mascarado 0x" 
                       << std::hex << (int)V[x] << std::dec << std::endl;
             break;
+
+            case 0xD: {
+
+                uint8_t posX = V[x] % 64;
+            uint8_t posY = V[y] % 32;
+
+            V[0xF] = 0; 
+
+            for(int linha = 0; linha < n; linha++){
+                uint8_t spriteByte = memory[I + linha];
+
+                for(int col = 0; col < 8; col++){
+                    if ((spriteByte & (0x80 >> col)) != 0){
+                        int targetX = (posX + col) % 64;
+                        int targetY = (posY + linha) % 32;
+
+                        if (gfx[targetY][targetX] == 1){
+                            V[0xF] = 1;
+                        }
+
+                        gfx[targetY][targetX] ^= 1;
+                    }
+                }
+            }
+            break;
+            }
 
             case 0xF:
             switch (opcode & 0x00FF){
