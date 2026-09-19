@@ -224,6 +224,23 @@ public:
             break;
             }
 
+            case 0xE:
+            switch (opcode & 0x00FF){
+
+                case 0x9E:
+                if (teclado[V[x]]){
+                    pc += 2;
+                }
+                break;
+
+                case 0xA1:
+                if (!teclado[V[x]]){
+                    pc += 2;
+                }
+                break;
+            }
+            break;
+
             case 0xF:
             switch (opcode & 0x00FF){
                 case 0x7:
